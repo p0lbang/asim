@@ -5,19 +5,32 @@ const AUTHORIZATION = "Bearer 1374667|QTJbkMIKhLfSy9Qn4ujWIPxDxxNqT3iQh9dczsqR";
 const HEADERS = {
   "Accept": "application/json, text/plain, */*",
   "Accept-Language": "en-US,en;q=0.5",
-  "Authorization": AUTHORIZATION,
+  // "Authorization": AUTHORIZATION,
   "Sec-Fetch-Dest": "empty",
   "Sec-Fetch-Mode": "cors",
   "Sec-Fetch-Site": "same-site",
 };
 
+const tokenValidate = new RegExp('^Bearer [0-9]{7}\|[0-9a-zA-Z]{40}$');
+
 export const amisRouter = createTRPCRouter({
+  validateToken: publicProcedure
+    .input(z.object({ token: z.string() }))
+    .query(({ input }) => {
+      const isvalid = tokenValidate.test(input.token)
+      return isvalid;
+    }),
   userInfo: publicProcedure
-    .input(z.object({ saisID: z.number() }))
+    .input(z.object({ token: z.string(), saisID: z.number() }))
     .query(async ({ input }) => {
+      const userHeaders = {
+        ...HEADERS,
+        "Authorization": input.token,
+      }
+
       const value = await fetch("https://api.amis.uplb.edu.ph/api/auth/user", {
         "credentials": "include",
-        "headers": HEADERS,
+        "headers": userHeaders,
         "referrer": "https://amis.uplb.edu.ph/",
         "method": "GET",
         "mode": "cors"
@@ -39,7 +52,7 @@ export const amisRouter = createTRPCRouter({
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const output = await response.json();
-    
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const legitoutput = output.enlistments[0].student_enlistment_classes;
     console.log(legitoutput);
