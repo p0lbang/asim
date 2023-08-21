@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment*/
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import BasePage from "~/components/BasePage";
 import { api } from "~/utils/api";
 
@@ -11,45 +14,55 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
   });
 
   function displaysubj(status: string) {
-    return subjects.data?.map((value, index) => {
+    return subjects.data?.map((value: unknown, index) => {
       // console.log(value.class);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      return status.localeCompare(value.status) === 0 ? (
-        <div
-          key={index}
-          className="flex flex-col rounded-lg border-2 border-green-600 p-2"
-        >
-          {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
-          <div className="flex flex-row">
-            <div className="flex-grow pr-2">
-              <span className="font-bold">
-                {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
-                {value.class.course.course_code} {value.class.section}{" "}
-              </span>
-              {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
-              {value.class.course.title}
+      try {
+        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        return status.localeCompare(value.status) === 0 ? (
+          <div
+            key={index}
+            className="flex flex-col rounded-lg border-2 border-green-600 p-2"
+          >
+            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
+            <div className="flex flex-row">
+              <div className="flex-grow pr-2">
+                <span className="font-bold">
+                  {/* @ts-ignore */}
+                  {value.class.course.course_code} {value.class.section}{" "}
+                </span>
+                {/* @ts-ignore */}
+                {value.class.course.title}
+              </div>
+              <div
+                className={`h-fit w-fit p-2 ${
+                  // @ts-ignore
+                  value.class.max_class_size === value.class.active_class_size
+                    ? "bg-red-500"
+                    : "bg-blue-500"
+                }`}
+              >
+                {/* @ts-ignore */}
+                {value.class.active_class_size}/{value.class.max_class_size}
+              </div>
             </div>
-            <div
-              className={`h-fit w-fit p-2 ${
-                value.class.max_class_size === value.class.active_class_size
-                  ? "bg-red-500"
-                  : "bg-blue-500"
-              }`}
-            >
-              {value.class.active_class_size}/{value.class.max_class_size}
+            <div className="">
+              Faculty: {/* @ts-ignore */}
+              {value.class.faculties && value.class.faculties.length > 0
+                ? /* @ts-ignore */
+                  `${value.class.faculties[0].faculty.user.first_name} ${value.class.faculties[0].faculty.user.last_name}`
+                : "TBA"}
             </div>
+            {/* @ts-ignore */}
+            <div className="">Location: {value.class.facility_id}</div>
+            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
+            {/* <div key={index}>{stringify(value.class)}</div> */}
           </div>
-          <div className="">
-            Faculty:{" "}
-            {value.class.faculties && value.class.faculties.length > 0
-              ? `${value.class.faculties[0].faculty.user.first_name} ${value.class.faculties[0].faculty.user.last_name}`
-              : "TBA"}
-          </div>
-          <div className="">Location: {value.class.facility_id}</div>
-          {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
-          {/* <div key={index}>{stringify(value.class)}</div> */}
-        </div>
-      ) : null;
+        ) : null;
+      } catch (err) {
+        console.log(err);
+      }
+      return null;
     });
   }
 
