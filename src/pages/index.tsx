@@ -1,18 +1,35 @@
-import Head from "next/head";
+import { useState } from "react";
 import Home from "./home";
+import BasePage from "~/components/BasePage";
+import { api } from "~/utils/api";
 
 export default function Index() {
-  return (
-    <>
-      <Head>
-        <title>SIMA</title>
-      </Head>
-      <main className="flex min-h-screen flex-col items-center justify-center">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <h1 className="text-6xl font-bold">SIMA</h1>
-          <Home />
-        </div>
-      </main>
-    </>
-  );
+  const [token, setToken] = useState("");
+  const validateToken = api.amis.validateToken.useQuery({ token });
+
+  if (validateToken.data === undefined || validateToken.data == false)
+    return (
+      <BasePage>
+        <h1 className="text-6xl font-bold">ASIM</h1>
+        <form
+          className="flex flex-col"
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onSubmit={async (e) => {
+            e.preventDefault();
+            await validateToken.refetch();
+          }}
+        >
+          <input
+            className="border-2 border-black"
+            type="text"
+            value={token}
+            onChange={(e) => {
+              setToken(e.target.value);
+            }}
+          />
+        </form>
+      </BasePage>
+    );
+
+  return <Home />;
 }
