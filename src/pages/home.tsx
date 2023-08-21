@@ -1,3 +1,4 @@
+import BasePage from "~/components/BasePage";
 import { api } from "~/utils/api";
 
 export default function Home() {
@@ -49,16 +50,27 @@ export default function Home() {
     });
   }
 
+  if (subjects.isLoading)
+    return (
+      <BasePage>
+        <h1 className="text-6xl font-bold">ASIM</h1>
+        <h1 className="text-6xl font-bold">Loading...</h1>
+      </BasePage>
+    );
+
   return (
-    <div className="flex flex-row justify-center gap-2">
-      <div className="flex w-[50%] flex-col gap-2">
-        <div className="text-center">BOOKMARKED</div>
-        {displaysubj("Bookmarked")}
+    <BasePage>
+      <h1 className="text-6xl font-bold">ASIM</h1>
+      <div className="flex flex-row justify-center gap-2">
+        <div className="flex w-[50%] flex-col gap-2">
+          <div className="text-center">BOOKMARKED</div>
+          {displaysubj("Bookmarked")}
+        </div>
+        <div className="flex w-[50%] flex-col gap-2">
+          <div className="text-center">ENLISTED</div>
+          {displaysubj("Submitted")}
+        </div>
       </div>
-      <div className="flex w-[50%] flex-col gap-2">
-        <div className="text-center">ENLISTED</div>
-        {displaysubj("Submitted")}
-      </div>
-    </div>
+    </BasePage>
   );
 }
