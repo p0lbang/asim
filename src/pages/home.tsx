@@ -1,10 +1,13 @@
 import BasePage from "~/components/BasePage";
 import { api } from "~/utils/api";
 
-export default function Home() {
-  // const hello = api.amis.userInfo.useQuery({ saisID: 123 });
+const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
+  usertoken,
+  userid,
+}) => {
   const subjects = api.amis.getSubjects.useQuery({
-    userID: "c986ecdc-3f8f-471c-ac9b-fa1046da9191",
+    token: usertoken ?? "",
+    userID: userid ?? "",
   });
 
   function displaysubj(status: string) {
@@ -73,4 +76,6 @@ export default function Home() {
       </div>
     </BasePage>
   );
-}
+};
+
+export default Home;
