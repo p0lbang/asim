@@ -77,6 +77,15 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
   return (
     <BasePage>
       <h1 className="text-6xl font-bold">ASIM</h1>
+      {localStorage.getItem("last_name") && (
+        <p className="text-lg">
+          {localStorage.getItem("first_name")}{" "}
+          {localStorage.getItem("last_name")}
+        </p>
+      )}
+
+      <button className="text-2xl bg-blue-500 rounded-lg p-2 hidden">ENLIST ALL</button>
+
       <div className="flex flex-row justify-center gap-2">
         <div className="flex w-[50%] flex-col gap-2">
           <div className="text-center">BOOKMARKED</div>
