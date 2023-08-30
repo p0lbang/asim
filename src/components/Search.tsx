@@ -2,14 +2,19 @@ import { useState } from "react";
 import { api } from "~/utils/api";
 
 const Search: React.FC<{ token: string | undefined }> = ({ token }) => {
-  const [courseSearch, setCourseSearch] = useState("hk 12");
-  const searchSubject = api.amis.searchSubject.useQuery({
-    course: courseSearch,
-    items: 10,
-    page: 1,
-    status: "All",
-    token: token ?? "",
-  });
+  const [courseSearch, setCourseSearch] = useState("");
+  const [items, setItems] = useState(5);
+
+  const searchSubject = api.amis.searchSubject.useQuery(
+    {
+      course: courseSearch,
+      items: items,
+      page: 1,
+      status: "All",
+      token: token ?? "",
+    },
+    { enabled: false }
+  );
 
   if (!searchSubject.isLoading) console.log(searchSubject.data);
 
@@ -70,28 +75,48 @@ const Search: React.FC<{ token: string | undefined }> = ({ token }) => {
   }
 
   return (
-    <div>
+    <>
+      <h1 className="text-6xl font-bold">Search</h1>
       <form
-        className="mb-2 flex flex-col"
+        className="mb-2 flex flex-row gap-2"
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={async (e) => {
           e.preventDefault();
+          console.log("fetch");
           await searchSubject.refetch();
         }}
       >
         <input
-          className="border-2 border-black"
+          className="rounded-lg border-2 border-black pl-2"
           type="text"
+          placeholder="Course"
           onChange={(e) => {
             setCourseSearch(e.target.value);
           }}
         />
+        <input
+          className="rounded-lg border-2 border-black pl-2"
+          type="number"
+          placeholder="Items"
+          onChange={(e) => {
+            setItems(Number(e.target.value));
+          }}
+        />
+        <input
+          className="rounded-lg bg-green-600 p-2"
+          type="submit"
+          value="Search"
+        />
       </form>
 
       <div className="flex flex-row flex-wrap gap-2">
-        {!searchSubject.isLoading && displaysubj(searchSubject, "Submitted")}
+        {searchSubject.isFetching ? (
+          <div>Loading</div>
+        ) : (
+          displaysubj(searchSubject, "Submitted")
+        )}
       </div>
-    </div>
+    </>
   );
 };
 
