@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment*/
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import { useState } from "react";
 import { api } from "~/utils/api";
 
@@ -16,11 +19,8 @@ const Search: React.FC<{ token: string | undefined }> = ({ token }) => {
     { enabled: false }
   );
 
-  if (!searchSubject.isLoading) console.log(searchSubject.data);
-
   function displaysubj(
-    subjects: { data: unknown[] | undefined },
-    status: string
+    subjects: { data: unknown[] | undefined }
   ) {
     return subjects.data?.map((value: unknown, index) => {
       // console.log(value);
@@ -82,7 +82,7 @@ const Search: React.FC<{ token: string | undefined }> = ({ token }) => {
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={async (e) => {
           e.preventDefault();
-          console.log("fetch");
+          // console.log("fetch");
           await searchSubject.refetch();
         }}
       >
@@ -113,7 +113,7 @@ const Search: React.FC<{ token: string | undefined }> = ({ token }) => {
         {searchSubject.isFetching ? (
           <div>Loading</div>
         ) : (
-          displaysubj(searchSubject, "Submitted")
+          displaysubj(searchSubject)
         )}
       </div>
     </>

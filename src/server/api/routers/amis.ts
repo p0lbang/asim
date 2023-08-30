@@ -40,7 +40,7 @@ export const amisRouter = createTRPCRouter({
         });
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const output = await value.json();
-        console.log(output);
+        // console.log(output);
         try {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           if (output.message === 'Unauthenticated.') {
@@ -112,10 +112,10 @@ export const amisRouter = createTRPCRouter({
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const output = await response.json();
 
+    // console.log("backend");
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    console.log("backend");
     const legitoutput = output.classes.data;
-    console.log(legitoutput);
+    // console.log(legitoutput);
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return legitoutput as Array<unknown>;

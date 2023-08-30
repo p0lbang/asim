@@ -20,7 +20,7 @@ export default function Index() {
       localStorage.setItem("first_name", validateToken.data.first_name);
       localStorage.setItem("last_name", validateToken.data.last_name);
     }
-    console.log("hatdog");
+    // console.log("hatdog");
   }, [validateToken.data]);
 
   if (validateToken.isLoading)
