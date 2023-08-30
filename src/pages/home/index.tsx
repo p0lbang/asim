@@ -20,7 +20,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
       try {
         // @ts-ignore
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        return status.localeCompare(value.status) === 0 ? (
+        return status.localeCompare(value.status) === 0 || status !== "Bookmarked" ? (
           <div
             key={index}
             className="flex min-w-[300px] max-w-[500px] flex-col rounded-lg border-2 border-green-600 p-2"
