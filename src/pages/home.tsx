@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 import BasePage from "~/components/BasePage";
+import Search from "~/components/Search";
 import { api } from "~/utils/api";
 
 const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
@@ -96,6 +97,8 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
           {displaysubj("Submitted")}
         </div>
       </div>
+
+      <Search token={usertoken} />
     </BasePage>
   );
 };
