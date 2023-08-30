@@ -78,7 +78,7 @@ const Search: React.FC<{ token: string | undefined }> = ({ token }) => {
     <>
       <h1 className="text-6xl font-bold">Search</h1>
       <form
-        className="mb-2 flex flex-row gap-2"
+        className="mb-2 flex flex-col sm:flex-row gap-2"
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={async (e) => {
           e.preventDefault();
@@ -109,7 +109,7 @@ const Search: React.FC<{ token: string | undefined }> = ({ token }) => {
         />
       </form>
 
-      <div className="flex flex-row flex-wrap gap-2">
+      <div className="flex flex-row flex-wrap gap-2 justify-center">
         {searchSubject.isFetching ? (
           <div>Loading</div>
         ) : (

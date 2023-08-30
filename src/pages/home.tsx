@@ -87,7 +87,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
 
       <button className="text-2xl bg-blue-500 rounded-lg p-2 hidden">ENLIST ALL</button>
 
-      <div className="flex flex-row justify-center gap-2">
+      <div className="flex flex-col sm:flex-row justify-center items-center sm:items-start gap-2">
         <div className="flex w-[50%] flex-col gap-2">
           <div className="text-center">BOOKMARKED</div>
           {displaysubj("Bookmarked")}
