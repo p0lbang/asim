@@ -96,4 +96,29 @@ export const amisRouter = createTRPCRouter({
     return legitoutput as Array<unknown>;
     // return output;
   }),
+  searchSubject: publicProcedure.input(z.object({ token: z.string(), course: z.string(), status: z.string(), items: z.number(), page: z.number() })).query(async ({input}) => {
+    const course = input.course.split(" ").join("+");
+    const items = Math.max(1,input.items);
+    const page = Math.max(1,input.page);
+    const response = await fetch(`https://api.amis.uplb.edu.ph/api/students/classes?page=${page}&items=${items}&action=--&course=--&course_code_like=${course}&class_status=${input.status}`, {
+      "credentials": "include",
+      "headers": userHeaders(input.token),
+      "referrer": "https://amis.uplb.edu.ph/",
+      "method": "GET",
+      "mode": "cors"
+    });
+
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const output = await response.json();
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    console.log("backend");
+    const legitoutput = output.classes.data;
+    console.log(legitoutput);
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return legitoutput as Array<unknown>;
+    // return output;
+  }),
 });
