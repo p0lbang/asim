@@ -30,7 +30,7 @@ const Search: React.FC<{ token: string | undefined }> = ({ token }) => {
         return (
           <div
             key={index}
-            className="flex min-w-[300px] max-w-[500px] flex-col rounded-lg border-2 border-green-600 p-2"
+            className="flex flex-col rounded-lg border-2 border-green-600 p-2"
           >
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
             <div className="flex flex-row">
@@ -109,7 +109,7 @@ const Search: React.FC<{ token: string | undefined }> = ({ token }) => {
         />
       </form>
 
-      <div className="flex flex-row flex-wrap gap-2 justify-center">
+      <div className="flex flex-row flex-wrap gap-2 justify-center items-stretch">
         {searchSubject.isFetching ? (
           <div>Loading</div>
         ) : (

@@ -23,7 +23,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
         return status.localeCompare(value.status) === 0 ? (
           <div
             key={index}
-            className="flex flex-col rounded-lg border-2 border-green-600 p-2"
+            className="flex min-w-[300px] max-w-[500px] flex-col rounded-lg border-2 border-green-600 p-2"
           >
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
             <div className="flex flex-row">
@@ -38,7 +38,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
               <div
                 className={`h-fit w-fit p-2 ${
                   // @ts-ignore
-                  value.class.active_class_size >= value.class.max_class_size 
+                  value.class.active_class_size >= value.class.max_class_size
                     ? "bg-red-500"
                     : "bg-blue-500"
                 }`}
@@ -85,14 +85,16 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
         </p>
       )}
 
-      <button className="text-2xl bg-blue-500 rounded-lg p-2 hidden">ENLIST ALL</button>
+      <button className="hidden rounded-lg bg-blue-500 p-2 text-2xl">
+        ENLIST ALL
+      </button>
 
-      <div className="flex flex-col sm:flex-row justify-center items-center sm:items-start gap-2">
-        <div className="flex w-[50%] flex-col gap-2">
+      <div className="flex flex-col items-center justify-center gap-2 sm:flex-row sm:items-start">
+        <div className="flex flex-col gap-2 sm:w-[50%]">
           <div className="text-center">BOOKMARKED</div>
           {displaysubj("Bookmarked")}
         </div>
-        <div className="flex w-[50%] flex-col gap-2">
+        <div className="flex flex-col gap-2 sm:w-[50%]">
           <div className="text-center">ENLISTED</div>
           {displaysubj("Submitted")}
         </div>
