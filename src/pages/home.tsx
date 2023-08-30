@@ -37,7 +37,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
               <div
                 className={`h-fit w-fit p-2 ${
                   // @ts-ignore
-                  value.class.max_class_size === value.class.active_class_size
+                  value.class.active_class_size >= value.class.max_class_size 
                     ? "bg-red-500"
                     : "bg-blue-500"
                 }`}
