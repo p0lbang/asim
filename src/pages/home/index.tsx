@@ -24,7 +24,12 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
       removeBookmark: bookmarkInfo,
       studEnlistID: studEnlistID,
     },
-    { enabled: false }
+    {
+      onSuccess: () => {
+        void subjects.refetch();
+      },
+      enabled: false,
+    }
   );
 
   const bkmrk = "Bookmarked";
@@ -42,6 +47,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
       } | null;
     };
   };
+
   function displaysubj(status: string) {
     return subjects.data?.map((v, index) => {
       const value = v as testvalue;
@@ -127,17 +133,16 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
                   className="rounded-lg bg-red-600 p-2"
                   type="button"
                   value="Remove"
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                  onClick={async () => {
+                  onClick={() => {
+                    if(removebk.isFetching || removebk.isLoading || removebk.isRefetching){
+                      return;
+                    }
+                    
                     setbookmarkInfo(JSON.stringify(removeaction));
                     setstudEnlistID(
                       value.student_enlistment_id.toString() ?? ""
                     );
-                    await removebk.refetch();
-
-                    if (removebk.isSuccess) {
-                      void subjects.refetch();
-                    }
+                    void removebk.refetch();
                   }}
                 />
               </div>
