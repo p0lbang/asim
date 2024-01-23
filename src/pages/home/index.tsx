@@ -20,11 +20,11 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
       try {
         if (status === "Bookmarked") {
           // @ts-ignore
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           if (status.localeCompare(value.status) !== 0) {
             return null;
           }
         }
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         return (
           <div
             key={index}
