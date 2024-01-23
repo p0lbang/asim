@@ -35,7 +35,7 @@ const Search: React.FC<{
           id: number;
           parent_class_id: null | number;
         };
-        console.log(value);
+        // console.log(value);
         let addbookmark: {
           classes: { class_id: number; linked: number | boolean }[];
           action: string;

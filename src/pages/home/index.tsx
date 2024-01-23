@@ -19,7 +19,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
 
   const refetchSubjects = () => {
     setrefereshSubj((v) => v + 1);
-    console.log(refereshSubj);
+    // console.log(refereshSubj);
     void subjects.refetch();
   };
 
@@ -48,7 +48,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
   function displaysubj(status: string) {
     return subjects.data?.map((v, index) => {
       const value = v as testvalue;
-      console.log(value.class);
+      // console.log(value.class);
       try {
         if (status === "Bookmarked") {
           // @ts-ignore
