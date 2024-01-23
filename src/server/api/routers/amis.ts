@@ -7,6 +7,7 @@ const HEADERS = {
   "Sec-Fetch-Dest": "empty",
   "Sec-Fetch-Mode": "cors",
   "Sec-Fetch-Site": "same-site",
+  "Content-Type": "application/json"
 };
 
 const userHeaders = (token: string) => {
@@ -77,6 +78,24 @@ export const amisRouter = createTRPCRouter({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return output;
     }),
+    removeBookmark: publicProcedure
+    .input(z.object({ token: z.string(), removeBookmark: z.string(), studEnlistID: z.string() }))
+    .query(async ({ input }) => {
+      const value = await fetch(`https://api.amis.uplb.edu.ph/api/students/enlistments/${input.studEnlistID}`, {
+        "credentials": "include",
+        "headers": userHeaders(input.token),
+        "body": input.removeBookmark,
+        "referrer": "https://amis.uplb.edu.ph/",
+        "method": "PUT",
+        "mode": "cors"
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const output = await value.json();
+      // console.log(output);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return output;
+    }),
   getSubjects: publicProcedure.input(z.object({ token: z.string(), userID: z.string() })).query(async ({ input }) => {
     const response = await fetch(`https://api.amis.uplb.edu.ph/api/students/enlistments?enlistment_user_id=${input.userID}&enlistedClasses=true`, {
       "credentials": "include",
@@ -96,10 +115,10 @@ export const amisRouter = createTRPCRouter({
     return legitoutput as Array<unknown>;
     // return output;
   }),
-  searchSubject: publicProcedure.input(z.object({ token: z.string(), course: z.string(), status: z.string(), items: z.number(), page: z.number() })).query(async ({input}) => {
+  searchSubject: publicProcedure.input(z.object({ token: z.string(), course: z.string(), status: z.string(), items: z.number(), page: z.number() })).query(async ({ input }) => {
     const course = input.course.split(" ").join("+");
-    const items = Math.max(1,input.items);
-    const page = Math.max(1,input.page);
+    const items = Math.max(1, input.items);
+    const page = Math.max(1, input.page);
     const response = await fetch(`https://api.amis.uplb.edu.ph/api/students/classes?page=${page}&items=${items}&action=--&course=--&course_code_like=${course}&class_status=${input.status}`, {
       "credentials": "include",
       "headers": userHeaders(input.token),

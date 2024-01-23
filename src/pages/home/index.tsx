@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment*/
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
+import { useState } from "react";
 import BasePage from "~/components/BasePage";
 import Search from "~/components/Search";
 import { api } from "~/utils/api";
@@ -14,6 +15,19 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
     userID: userid ?? "",
   });
 
+  const [bookmarkInfo, setbookmarkInfo] = useState("");
+  const [studEnlistID, setstudEnlistID] = useState("");
+
+  const removebk = api.amis.removeBookmark.useQuery(
+    {
+      token: usertoken ?? "",
+      removeBookmark: bookmarkInfo,
+      studEnlistID: studEnlistID,
+    },
+    { enabled: false }
+  );
+
+  const bkmrk = "Bookmarked";
   function displaysubj(status: string) {
     return subjects.data?.map((value: unknown, index) => {
       // console.log(value.class);
@@ -24,7 +38,37 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
           if (status.localeCompare(value.status) !== 0) {
             return null;
           }
+        } else {
+          if (bkmrk.localeCompare(value.status) === 0) {
+            return null;
+          }
         }
+        // console.log(value);
+        const classParentPresent = value.class.parent != null;
+        const removeBookmark = {
+          course_id: value.class.course_id,
+          linked: value.linked,
+          class_details: {
+            course_id: value.class.course_id,
+            lecture_details: {
+              class_id: classParentPresent
+                ? value.class.parent.id
+                : value.class.id,
+              linked: classParentPresent ? value.class.id : value.linked,
+            },
+            child_details: {
+              class_id: classParentPresent ? value.class.id : "None",
+              linked: classParentPresent ? value.class.parent_class_id : false,
+            },
+          },
+        };
+
+        const removeaction = {
+          classes: [removeBookmark],
+          action: "Deleted",
+        };
+
+        const removeall = false;
         return (
           <div
             key={index}
@@ -46,7 +90,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
                   value.class.active_class_size >= value.class.max_class_size
                     ? "bg-red-500"
                     : "bg-blue-500"
-                  }`}
+                }`}
               >
                 {/* @ts-ignore */}
                 {value.class.active_class_size}/{value.class.max_class_size}
@@ -56,11 +100,30 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
               Faculty: {/* @ts-ignore */}
               {value.class.faculties && value.class.faculties.length > 0
                 ? /* @ts-ignore */
-                `${value.class.faculties[0].faculty.user.first_name} ${value.class.faculties[0].faculty.user.last_name}`
+                  `${value.class.faculties[0].faculty.user.first_name} ${value.class.faculties[0].faculty.user.last_name}`
                 : "TBA"}
             </div>
             {/* @ts-ignore */}
             <div className="">Location: {value.class.facility_id}</div>
+
+            {(bkmrk.localeCompare(value.status) === 0 || removeall) && (
+              <div className="text-end">
+                <input
+                  className="rounded-lg bg-red-600 p-2"
+                  type="button"
+                  value="Remove"
+                  onClick={() => {
+                    setbookmarkInfo(JSON.stringify(removeaction));
+                    setstudEnlistID(value.student_enlistment_id ?? "");
+                    void removebk.refetch();
+
+                    if (removebk.isSuccess) {
+                      void subjects.refetch();
+                    }
+                  }}
+                />
+              </div>
+            )}
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
             {/* <div key={index}>{stringify(value.class)}</div> */}
           </div>
