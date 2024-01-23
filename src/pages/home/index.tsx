@@ -28,9 +28,24 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
   );
 
   const bkmrk = "Bookmarked";
+
+  type testvalue = {
+    status: string;
+    linked: number | boolean;
+    student_enlistment_id: number;
+    class: {
+      parent_class_id: string;
+      id: string;
+      course_id: string;
+      parent: {
+        id: string;
+      } | null;
+    };
+  };
   function displaysubj(status: string) {
-    return subjects.data?.map((value: unknown, index) => {
-      // console.log(value.class);
+    return subjects.data?.map((v, index) => {
+      const value = v as testvalue;
+      console.log(value.class);
       try {
         if (status === "Bookmarked") {
           // @ts-ignore
@@ -52,7 +67,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
             course_id: value.class.course_id,
             lecture_details: {
               class_id: classParentPresent
-                ? value.class.parent.id
+                ? value.class.parent?.id
                 : value.class.id,
               linked: classParentPresent ? value.class.id : value.linked,
             },
@@ -112,10 +127,13 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
                   className="rounded-lg bg-red-600 p-2"
                   type="button"
                   value="Remove"
-                  onClick={() => {
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                  onClick={async () => {
                     setbookmarkInfo(JSON.stringify(removeaction));
-                    setstudEnlistID(value.student_enlistment_id ?? "");
-                    void removebk.refetch();
+                    setstudEnlistID(
+                      value.student_enlistment_id.toString() ?? ""
+                    );
+                    await removebk.refetch();
 
                     if (removebk.isSuccess) {
                       void subjects.refetch();
