@@ -4,7 +4,10 @@
 import { useState } from "react";
 import { api } from "~/utils/api";
 
-const Search: React.FC<{ token: string | undefined }> = ({ token }) => {
+const Search: React.FC<{
+  token: string | undefined;
+  refetchSubj: () => void;
+}> = ({ token, refetchSubj }) => {
   const [courseSearch, setCourseSearch] = useState("");
   const [items, setItems] = useState(5);
 
@@ -19,12 +22,37 @@ const Search: React.FC<{ token: string | undefined }> = ({ token }) => {
     { enabled: false }
   );
 
-  function displaysubj(
-    subjects: { data: unknown[] | undefined }
-  ) {
-    return subjects.data?.map((value: unknown, index) => {
-      // console.log(value);
+  const addbk = api.amis.addBookmark.useMutation({
+    onSuccess: () => {
+      void refetchSubj();
+    },
+  });
+
+  function displaysubj(subjects: { data: unknown[] | undefined }) {
+    return subjects.data?.map((v, index) => {
       try {
+        const value = v as {
+          id: number;
+          parent_class_id: null | number;
+        };
+        console.log(value);
+        let addbookmark: {
+          classes: { class_id: number; linked: number | boolean }[];
+          action: string;
+        } = {
+          classes: [{ class_id: value.id, linked: false }],
+          action: "Bookmarked",
+        };
+
+        if (value.parent_class_id !== null) {
+          addbookmark = {
+            classes: [
+              { class_id: value.id, linked: value.parent_class_id },
+              { class_id: value.parent_class_id, linked: value.id },
+            ],
+            action: "Bookmarked",
+          };
+        }
         // @ts-ignore
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         return (
@@ -63,6 +91,28 @@ const Search: React.FC<{ token: string | undefined }> = ({ token }) => {
             </div>
             {/* @ts-ignore */}
             <div className="">Location: {value.facility_id}</div>
+
+            <div className="text-end">
+              <input
+                className="cursor-pointer rounded-lg bg-blue-600 p-2"
+                type="button"
+                value="Add"
+                onClick={() => {
+                  if (addbk.isLoading) {
+                    return;
+                  }
+
+                  addbk.mutate({
+                    token: token ?? "",
+                    addBookmark: JSON.stringify(addbookmark),
+                  });
+
+                  if (addbk.isSuccess) {
+                    refetchSubj();
+                  }
+                }}
+              />
+            </div>
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
             {/* <div key={index}>{stringify(value)}</div> */}
           </div>
@@ -78,7 +128,7 @@ const Search: React.FC<{ token: string | undefined }> = ({ token }) => {
     <>
       <h1 className="text-6xl font-bold">Search</h1>
       <form
-        className="mb-2 flex flex-col sm:flex-row gap-2"
+        className="mb-2 flex flex-col gap-2 sm:flex-row"
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={async (e) => {
           e.preventDefault();
@@ -109,7 +159,7 @@ const Search: React.FC<{ token: string | undefined }> = ({ token }) => {
         />
       </form>
 
-      <div className="flex flex-row flex-wrap gap-2 justify-center items-stretch">
+      <div className="flex flex-row flex-wrap items-stretch justify-center gap-2">
         {searchSubject.isFetching ? (
           <div>Loading</div>
         ) : (

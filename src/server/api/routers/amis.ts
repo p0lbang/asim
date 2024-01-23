@@ -3,10 +3,8 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 const HEADERS = {
   "Accept": "application/json, text/plain, */*",
-  "Accept-Language": "en-US,en;q=0.5",
-  "Sec-Fetch-Dest": "empty",
-  "Sec-Fetch-Mode": "cors",
-  "Sec-Fetch-Site": "same-site",
+  // "Sec-Fetch-Dest": "empty",
+  // "Sec-Fetch-Mode": "cors",
   "Content-Type": "application/json"
 };
 
@@ -78,11 +76,28 @@ export const amisRouter = createTRPCRouter({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return output;
     }),
+    addBookmark: publicProcedure
+    .input(z.object({ token: z.string(), addBookmark: z.string() }))
+    .mutation(async ({ input }) => {
+      const value = await fetch(`https://api.amis.uplb.edu.ph/api/students/enlistments`, {
+        "credentials": "include",
+        "headers": userHeaders(input.token),
+        "body": input.addBookmark,
+        "referrer": "https://amis.uplb.edu.ph/",
+        "method": "POST",
+        "mode": "cors"
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const output = await value.json();
+      // console.log(output);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return output;
+    }),
     removeBookmark: publicProcedure
     .input(z.object({ token: z.string(), removeBookmark: z.string(), studEnlistID: z.string() }))
-    .query(async ({ input }) => {
+    .mutation(async ({ input }) => {
       const value = await fetch(`https://api.amis.uplb.edu.ph/api/students/enlistments/${input.studEnlistID}`, {
-        "credentials": "include",
         "headers": userHeaders(input.token),
         "body": input.removeBookmark,
         "referrer": "https://amis.uplb.edu.ph/",

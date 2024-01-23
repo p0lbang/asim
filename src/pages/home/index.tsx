@@ -15,22 +15,19 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
     userID: userid ?? "",
   });
 
-  const [bookmarkInfo, setbookmarkInfo] = useState("");
-  const [studEnlistID, setstudEnlistID] = useState("");
+  const [refereshSubj, setrefereshSubj] = useState(0);
 
-  const removebk = api.amis.removeBookmark.useQuery(
-    {
-      token: usertoken ?? "",
-      removeBookmark: bookmarkInfo,
-      studEnlistID: studEnlistID,
+  const refetchSubjects = () => {
+    setrefereshSubj((v) => v + 1);
+    console.log(refereshSubj);
+    void subjects.refetch();
+  };
+
+  const removebk = api.amis.removeBookmark.useMutation({
+    onSuccess: () => {
+      void refetchSubjects();
     },
-    {
-      onSuccess: () => {
-        void subjects.refetch();
-      },
-      enabled: false,
-    }
-  );
+  });
 
   const bkmrk = "Bookmarked";
 
@@ -130,19 +127,20 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
             {(bkmrk.localeCompare(value.status) === 0 || removeall) && (
               <div className="text-end">
                 <input
-                  className="rounded-lg bg-red-600 p-2"
+                  className="cursor-pointer rounded-lg bg-red-600 p-2"
                   type="button"
                   value="Remove"
                   onClick={() => {
-                    if(removebk.isFetching || removebk.isLoading || removebk.isRefetching){
+                    if (removebk.isLoading) {
                       return;
                     }
-                    
-                    setbookmarkInfo(JSON.stringify(removeaction));
-                    setstudEnlistID(
-                      value.student_enlistment_id.toString() ?? ""
-                    );
-                    void removebk.refetch();
+
+                    removebk.mutate({
+                      token: usertoken ?? "",
+                      removeBookmark: JSON.stringify(removeaction),
+                      studEnlistID:
+                        value.student_enlistment_id.toString() ?? "",
+                    });
                   }}
                 />
               </div>
@@ -191,7 +189,12 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
         </div>
       </div>
 
-      <Search token={usertoken} />
+      <Search
+        token={usertoken}
+        refetchSubj={() => {
+          refetchSubjects();
+        }}
+      />
     </BasePage>
   );
 };
