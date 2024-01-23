@@ -18,9 +18,14 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
     return subjects.data?.map((value: unknown, index) => {
       // console.log(value.class);
       try {
-        // @ts-ignore
+        if (status === "Bookmarked") {
+          // @ts-ignore
+          if (status.localeCompare(value.status) !== 0) {
+            return null;
+          }
+        }
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        return status.localeCompare(value.status) === 0 || status !== "Bookmarked" ? (
+        return (
           <div
             key={index}
             className="flex min-w-[300px] max-w-[500px] flex-col rounded-lg border-2 border-green-600 p-2"
@@ -41,7 +46,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
                   value.class.active_class_size >= value.class.max_class_size
                     ? "bg-red-500"
                     : "bg-blue-500"
-                }`}
+                  }`}
               >
                 {/* @ts-ignore */}
                 {value.class.active_class_size}/{value.class.max_class_size}
@@ -51,7 +56,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
               Faculty: {/* @ts-ignore */}
               {value.class.faculties && value.class.faculties.length > 0
                 ? /* @ts-ignore */
-                  `${value.class.faculties[0].faculty.user.first_name} ${value.class.faculties[0].faculty.user.last_name}`
+                `${value.class.faculties[0].faculty.user.first_name} ${value.class.faculties[0].faculty.user.last_name}`
                 : "TBA"}
             </div>
             {/* @ts-ignore */}
@@ -59,7 +64,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
             {/* <div key={index}>{stringify(value.class)}</div> */}
           </div>
-        ) : null;
+        );
       } catch (err) {
         console.log(err);
       }
