@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment*/
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
-import { useState } from "react";
 import BasePage from "~/components/BasePage";
 import Search from "~/components/Search";
 import { api } from "~/utils/api";
@@ -15,11 +14,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
     userID: userid ?? "",
   });
 
-  const [refereshSubj, setrefereshSubj] = useState(0);
-
   const refetchSubjects = () => {
-    setrefereshSubj((v) => v + 1);
-    // console.log(refereshSubj);
     void subjects.refetch();
   };
 
@@ -29,7 +24,15 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
     },
   });
 
-  const bkmrk = "Bookmarked";
+  const addbk = api.amis.addBookmark.useMutation({
+    onSuccess: () => {
+      void refetchSubjects();
+    },
+  });
+
+  const STATUS_BOOKMARKED = "Bookmarked";
+  const STATUS_CANCELLED = "Cancelled";
+  const STATUS_ENLISTED = "Enlisted";
 
   type testvalue = {
     status: string;
@@ -57,13 +60,13 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
             return null;
           }
         } else {
-          if (bkmrk.localeCompare(value.status) === 0) {
+          if (STATUS_BOOKMARKED.localeCompare(value.status) === 0) {
             return null;
           }
         }
         // console.log(value);
         const classParentPresent = value.class.parent != null;
-        const removeBookmark = {
+        const bookmarkInfo = {
           course_id: value.class.course_id,
           linked: value.linked,
           class_details: {
@@ -81,12 +84,6 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
           },
         };
 
-        const removeaction = {
-          classes: [removeBookmark],
-          action: "Deleted",
-        };
-
-        const removeall = false;
         return (
           <div
             key={index}
@@ -124,8 +121,29 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
             {/* @ts-ignore */}
             <div className="">Location: {value.class.facility_id}</div>
 
-            {(bkmrk.localeCompare(value.status) === 0 || removeall) && (
-              <div className="text-end">
+            {STATUS_BOOKMARKED.localeCompare(value.status) === 0 && (
+              <div className="space-x-2 text-end">
+                <input
+                  className="cursor-pointer rounded-lg bg-green-600 p-2"
+                  type="button"
+                  value="Enlist"
+                  onClick={() => {
+                    if (addbk.isLoading) {
+                      return;
+                    }
+
+                    const ActionBookmarkEnlist = {
+                      classes: [bookmarkInfo],
+                      action: "Enlisted",
+                    };
+
+                    addbk.mutate({
+                      token: usertoken ?? "",
+                      addBookmark: JSON.stringify(ActionBookmarkEnlist),
+                    });
+                  }}
+                />
+
                 <input
                   className="cursor-pointer rounded-lg bg-red-600 p-2"
                   type="button"
@@ -135,9 +153,40 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
                       return;
                     }
 
+                    const ActionBookmarkRemove = {
+                      classes: [bookmarkInfo],
+                      action: "Deleted",
+                    };
+
                     removebk.mutate({
                       token: usertoken ?? "",
-                      removeBookmark: JSON.stringify(removeaction),
+                      removeBookmark: JSON.stringify(ActionBookmarkRemove),
+                      studEnlistID:
+                        value.student_enlistment_id.toString() ?? "",
+                    });
+                  }}
+                />
+              </div>
+            )}
+            {STATUS_ENLISTED.localeCompare(value.status) === 0 && (
+              <div className="text-end">
+                <input
+                  className="cursor-pointer rounded-lg bg-red-600 p-2"
+                  type="button"
+                  value="Cancel"
+                  onClick={() => {
+                    if (removebk.isLoading) {
+                      return;
+                    }
+
+                    const ActionEnlistCancel = {
+                      classes: [bookmarkInfo],
+                      action: "Cancelled",
+                    };
+
+                    removebk.mutate({
+                      token: usertoken ?? "",
+                      removeBookmark: JSON.stringify(ActionEnlistCancel),
                       studEnlistID:
                         value.student_enlistment_id.toString() ?? "",
                     });
