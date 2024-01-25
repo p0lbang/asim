@@ -15,6 +15,8 @@ const userHeaders = (token: string) => {
   }
 }
 
+const BASE_DOMAIN = "https://api-amis.uplb.edu.ph";
+
 const tokenValidate = new RegExp('^Bearer [0-9]{7}\|[0-9a-zA-Z]{40}$');
 
 export const amisRouter = createTRPCRouter({
@@ -30,7 +32,7 @@ export const amisRouter = createTRPCRouter({
       let isvalid = tokenValidate.test(input.token);
 
       if (isvalid) {
-        const value = await fetch("https://api.amis.uplb.edu.ph/api/auth/user", {
+        const value = await fetch(`${BASE_DOMAIN}/api/auth/user`, {
           "credentials": "include",
           "headers": userHeaders(input.token),
           "referrer": "https://amis.uplb.edu.ph/",
@@ -63,7 +65,7 @@ export const amisRouter = createTRPCRouter({
   userInfo: publicProcedure
     .input(z.object({ token: z.string(), saisID: z.number() }))
     .query(async ({ input }) => {
-      const value = await fetch("https://api.amis.uplb.edu.ph/api/auth/user", {
+      const value = await fetch(`${BASE_DOMAIN}/api/auth/user`, {
         "credentials": "include",
         "headers": userHeaders(input.token),
         "referrer": "https://amis.uplb.edu.ph/",
@@ -79,7 +81,7 @@ export const amisRouter = createTRPCRouter({
     addBookmark: publicProcedure
     .input(z.object({ token: z.string(), addBookmark: z.string() }))
     .mutation(async ({ input }) => {
-      const value = await fetch(`https://api.amis.uplb.edu.ph/api/students/enlistments`, {
+      const value = await fetch(`${BASE_DOMAIN}/api/students/enlistments`, {
         "credentials": "include",
         "headers": userHeaders(input.token),
         "body": input.addBookmark,
@@ -97,7 +99,7 @@ export const amisRouter = createTRPCRouter({
     removeBookmark: publicProcedure
     .input(z.object({ token: z.string(), removeBookmark: z.string(), studEnlistID: z.string() }))
     .mutation(async ({ input }) => {
-      const value = await fetch(`https://api.amis.uplb.edu.ph/api/students/enlistments/${input.studEnlistID}`, {
+      const value = await fetch(`${BASE_DOMAIN}/api/students/enlistments/${input.studEnlistID}`, {
         "headers": userHeaders(input.token),
         "body": input.removeBookmark,
         "referrer": "https://amis.uplb.edu.ph/",
@@ -112,7 +114,7 @@ export const amisRouter = createTRPCRouter({
       return output;
     }),
   getSubjects: publicProcedure.input(z.object({ token: z.string(), userID: z.string() })).query(async ({ input }) => {
-    const response = await fetch(`https://api.amis.uplb.edu.ph/api/students/enlistments?enlistment_user_id=${input.userID}&enlistedClasses=true`, {
+    const response = await fetch(`${BASE_DOMAIN}/api/students/enlistments?enlistment_user_id=${input.userID}&enlistedClasses=true`, {
       "credentials": "include",
       "headers": userHeaders(input.token),
       "referrer": "https://amis.uplb.edu.ph/",
@@ -134,7 +136,7 @@ export const amisRouter = createTRPCRouter({
     const course = input.course.split(" ").join("+");
     const items = Math.max(1, input.items);
     const page = Math.max(1, input.page);
-    const response = await fetch(`https://api.amis.uplb.edu.ph/api/students/classes?page=${page}&items=${items}&action=--&course=--&course_code_like=${course}&class_status=${input.status}`, {
+    const response = await fetch(`${BASE_DOMAIN}/api/students/classes?page=${page}&items=${items}&action=--&course=--&course_code_like=${course}&class_status=${input.status}`, {
       "credentials": "include",
       "headers": userHeaders(input.token),
       "referrer": "https://amis.uplb.edu.ph/",
