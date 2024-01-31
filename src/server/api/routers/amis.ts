@@ -163,7 +163,7 @@ export const amisRouter = createTRPCRouter({
       const items = Math.max(1, input.items);
       const page = Math.max(1, input.page);
       const response = await fetch(
-        `${BASE_DOMAIN}/api/students/classes?page=${page}&items=${items}&action=--&course=--&course_code_like=${course}&class_status=${input.status}`,
+        `${BASE_DOMAIN}/api/students/classes?page=${page}&items=${items}&status=Active&course_code_like=${course}&section_like=--&class_status=${input.status}`,
         {
           credentials: "include",
           headers: userHeaders(input.token),
