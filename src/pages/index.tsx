@@ -52,7 +52,7 @@ export default function Index() {
           value={token}
           onChange={(e) => {
             setToken(e.target.value);
-            localStorage.setItem("token", e.target.value);
+            localStorage.setItem("token", decodeURI(e.target.value));
           }}
         />
       </form>
