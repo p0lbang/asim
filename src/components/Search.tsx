@@ -34,6 +34,7 @@ const Search: React.FC<{
         const value = v as {
           id: number;
           parent_class_id: null | number;
+          activity: null | string;
         };
         // console.log(value);
         let addbookmark: {
@@ -82,6 +83,11 @@ const Search: React.FC<{
                 {value.active_class_size}/{value.max_class_size}
               </div>
             </div>
+            { value.activity ? 
+            <div className="">
+            HK: {value.activity}
+          </div> : ""
+            }
             <div className="">
               Faculty: {/* @ts-ignore */}
               {value.faculties && value.faculties.length > 0
