@@ -35,6 +35,8 @@ const Search: React.FC<{
           id: number;
           parent_class_id: null | number;
           activity: null | string;
+          start_time: null | string;
+          end_time: null | string;
         };
         // console.log(value);
         let addbookmark: {
@@ -97,7 +99,11 @@ const Search: React.FC<{
             </div>
             {/* @ts-ignore */}
             <div className="">Location: {value.facility_id}</div>
-
+            { value.start_time ? 
+            <div className="">
+            Time: {value.start_time} - {value.end_time}
+          </div> : ""
+            }
             <div className="text-end">
               <input
                 className="cursor-pointer rounded-lg bg-blue-600 p-2"

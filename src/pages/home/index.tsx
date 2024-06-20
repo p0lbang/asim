@@ -39,6 +39,9 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
     linked: number | boolean;
     student_enlistment_id: number;
     class: {
+      start_time: null | string;
+      end_time: null | string;
+      activity: null | string;
       parent_class_id: string;
       id: string;
       course_id: string;
@@ -111,6 +114,11 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
                 {value.class.active_class_size}/{value.class.max_class_size}
               </div>
             </div>
+            { value.class.activity ? 
+            <div className="">
+            HK: {value.class.activity}
+          </div> : ""
+            }
             <div className="">
               Faculty: {/* @ts-ignore */}
               {value.class.faculties && value.class.faculties.length > 0
@@ -120,7 +128,11 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
             </div>
             {/* @ts-ignore */}
             <div className="">Location: {value.class.facility_id}</div>
-
+            { value.class.start_time ? 
+            <div className="">
+            Time: {value.class.start_time} - {value.class.end_time}
+          </div> : ""
+            }
             {STATUS_BOOKMARKED.localeCompare(value.status) === 0 && (
               <div className="space-x-2 text-end">
                 <input
