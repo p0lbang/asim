@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment*/
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
+import toast from "react-hot-toast";
 import BasePage from "~/components/BasePage";
 import Search from "~/components/Search";
 import { api } from "~/utils/api";
@@ -26,8 +27,12 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
 
   const addbk = api.amis.addBookmark.useMutation({
     onSuccess: () => {
+      toast.success("ENLISTED");
       void refetchSubjects();
     },
+    onError: (err) => {
+      toast.error(err.message || "Error!");
+    }
   });
 
   const STATUS_BOOKMARKED = "Bookmarked";

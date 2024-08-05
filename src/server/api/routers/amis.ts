@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
@@ -93,7 +94,15 @@ export const amisRouter = createTRPCRouter({
       });
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const output = await value.json();
+      const output = await value.json() as {message?: string};
+      console.log(output);
+      const saisdown = "Enlistment of Classes is not allowed during this time.";
+      if(output.message && saisdown.localeCompare(output.message) === 0){
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: output.message,
+        });
+      }
       // console.log(output);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return output;
