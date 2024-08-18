@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 import toast from "react-hot-toast";
+import { stringify } from "superjson";
 import BasePage from "~/components/BasePage";
 import Search from "~/components/Search";
 import { api } from "~/utils/api";
@@ -44,6 +45,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
     linked: number | boolean;
     student_enlistment_id: number;
     class: {
+      faculties: object[];
       start_time: null | string;
       end_time: null | string;
       activity: null | string;
@@ -113,30 +115,38 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
                   value.class.active_class_size >= value.class.max_class_size
                     ? "bg-red-500"
                     : "bg-blue-500"
-                }`}
+                  }`}
               >
                 {/* @ts-ignore */}
                 {value.class.active_class_size}/{value.class.max_class_size}
               </div>
             </div>
-            { value.class.activity ? 
-            <div className="">
-            HK: {value.class.activity}
-          </div> : ""
+            {value.class.activity ?
+              <div className="">
+                HK: {value.class.activity}
+              </div> : ""
             }
-            <div className="">
-              Faculty: {/* @ts-ignore */}
-              {value.class.faculties && value.class.faculties.length > 0
-                ? /* @ts-ignore */
-                  `${value.class.faculties[0].faculty.user.first_name} ${value.class.faculties[0].faculty.user.last_name}`
-                : "TBA"}
+            <div className="flex flex-row">
+              <div className="pr-2">
+                Faculty:
+              </div>
+              <div>
+
+                {value.class.faculties && value.class.faculties.length > 0
+                  ? /* @ts-ignore */
+                  value.class.faculties.map((v, index) => {
+                    /* @ts-ignore */
+                    return <p>{v.faculty.user.first_name} {v.faculty.user.last_name}</p>
+                  })
+                  : "TBA"}
+              </div>
             </div>
             {/* @ts-ignore */}
             <div className="">Location: {value.class.facility_id}</div>
-            { value.class.start_time ? 
-            <div className="">
-            Time: {value.class.start_time} - {value.class.end_time}
-          </div> : ""
+            {value.class.start_time ?
+              <div className="">
+                Time: {value.class.start_time} - {value.class.end_time}
+              </div> : ""
             }
             {STATUS_BOOKMARKED.localeCompare(value.status) === 0 && (
               <div className="space-x-2 text-end">

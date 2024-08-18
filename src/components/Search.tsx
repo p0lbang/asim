@@ -79,30 +79,39 @@ const Search: React.FC<{
                   value.active_class_size >= value.max_class_size
                     ? "bg-red-500"
                     : "bg-blue-500"
-                }`}
+                  }`}
               >
                 {/* @ts-ignore */}
                 {value.active_class_size}/{value.max_class_size}
               </div>
             </div>
-            { value.activity ? 
-            <div className="">
-            HK: {value.activity}
-          </div> : ""
+            {value.activity ?
+              <div className="">
+                HK: {value.activity}
+              </div> : ""
             }
-            <div className="">
-              Faculty: {/* @ts-ignore */}
-              {value.faculties && value.faculties.length > 0
-                ? /* @ts-ignore */
-                  `${value.faculties[0].faculty.user.first_name} ${value.faculties[0].faculty.user.last_name}`
-                : "TBA"}
+            <div className="flex flex-row">
+              <div className="pr-2">
+                Faculty:
+              </div>
+              <div>
+
+                {/* @ts-ignore */}
+                {value.faculties && value.faculties.length > 0
+                  ? /* @ts-ignore */
+                  value.faculties.map((v, index) => {
+                    /* @ts-ignore */
+                    return <p>{v.faculty.user.first_name} {v.faculty.user.last_name}</p>
+                  })
+                  : "TBA"}
+              </div>
             </div>
             {/* @ts-ignore */}
             <div className="">Location: {value.facility_id}</div>
-            { value.start_time ? 
-            <div className="">
-            Time: {value.start_time} - {value.end_time}
-          </div> : ""
+            {value.start_time ?
+              <div className="">
+                Time: {value.start_time} - {value.end_time}
+              </div> : ""
             }
             <div className="text-end">
               <input
