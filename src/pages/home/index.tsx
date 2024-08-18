@@ -45,6 +45,8 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
     linked: number | boolean;
     student_enlistment_id: number;
     class: {
+      facility_id: null | string;
+      date: string;
       faculties: object[];
       start_time: null | string;
       end_time: null | string;
@@ -141,12 +143,18 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
                   : "TBA"}
               </div>
             </div>
-            {/* @ts-ignore */}
-            <div className="">Location: {value.class.facility_id}</div>
+            {value.class.date ?
+              <div className="">
+                Date: {value.class.date}
+              </div> : ""
+            }
             {value.class.start_time ?
               <div className="">
                 Time: {value.class.start_time} - {value.class.end_time}
               </div> : ""
+            }
+            {value.class.facility_id ?
+              <div className="">Location: {value.class.facility_id}</div> : ""
             }
             {STATUS_BOOKMARKED.localeCompare(value.status) === 0 && (
               <div className="space-x-2 text-end">

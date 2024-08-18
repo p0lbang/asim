@@ -32,6 +32,8 @@ const Search: React.FC<{
     return subjects.data?.map((v, index) => {
       try {
         const value = v as {
+          facility_id: null | string;
+          date: string;
           id: number;
           parent_class_id: null | number;
           activity: null | string;
@@ -106,12 +108,18 @@ const Search: React.FC<{
                   : "TBA"}
               </div>
             </div>
-            {/* @ts-ignore */}
-            <div className="">Location: {value.facility_id}</div>
+            {value.date ?
+              <div className="">
+                Date: {value.date}
+              </div> : ""
+            }
             {value.start_time ?
               <div className="">
                 Time: {value.start_time} - {value.end_time}
               </div> : ""
+            }
+            {value.facility_id ?
+              <div className="">Location: {value.facility_id}</div> : ""
             }
             <div className="text-end">
               <input
