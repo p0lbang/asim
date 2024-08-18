@@ -177,6 +177,8 @@ const Search: React.FC<{
           className="rounded-lg border-2 border-black pl-2"
           type="number"
           placeholder="Items"
+          min={5}
+          defaultValue={5}
           onChange={(e) => {
             setItems(Number(e.target.value));
           }}
