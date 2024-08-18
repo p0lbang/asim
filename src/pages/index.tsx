@@ -51,8 +51,8 @@ export default function Index() {
           type="text"
           value={token}
           onChange={(e) => {
-            setToken(e.target.value);
-            localStorage.setItem("token", decodeURI(e.target.value));
+            setToken(decodeURI(e.target.value));
+            localStorage.setItem("token", token);
           }}
         />
       </form>
