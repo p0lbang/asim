@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 import toast from "react-hot-toast";
-import { stringify } from "superjson";
 import BasePage from "~/components/BasePage";
 import Search from "~/components/Search";
 import { api } from "~/utils/api";
@@ -136,9 +135,9 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
 
                 {value.class.faculties && value.class.faculties.length > 0
                   ? /* @ts-ignore */
-                  value.class.faculties.map((v, index) => {
+                  value.class.faculties.map((v, _index) => {
                     /* @ts-ignore */
-                    return <p>{v.faculty.user.first_name} {v.faculty.user.last_name}</p>
+                    return <p key={v}>{v.faculty.user.first_name} {v.faculty.user.last_name}</p>
                   })
                   : "TBA"}
               </div>

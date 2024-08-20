@@ -32,6 +32,7 @@ const Search: React.FC<{
     return subjects.data?.map((v, index) => {
       try {
         const value = v as {
+          faculties: object[];
           facility_id: null | string;
           date: string;
           id: number;
@@ -101,9 +102,9 @@ const Search: React.FC<{
                 {/* @ts-ignore */}
                 {value.faculties && value.faculties.length > 0
                   ? /* @ts-ignore */
-                  value.faculties.map((v, index) => {
+                  value.faculties.map((v, _index) => {
                     /* @ts-ignore */
-                    return <p>{v.faculty.user.first_name} {v.faculty.user.last_name}</p>
+                    return <p key={v}>{v.faculty.user.first_name} {v.faculty.user.last_name}</p>
                   })
                   : "TBA"}
               </div>
