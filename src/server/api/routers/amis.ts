@@ -27,11 +27,13 @@ export const amisRouter = createTRPCRouter({
         id: string;
         first_name: string;
         last_name: string;
+        term_id: string;
       } = {
         isvalid: false,
         id: "",
         first_name: "",
         last_name: "",
+        term_id: "",
       };
       let isvalid = tokenValidate.test(input.token);
 
@@ -53,11 +55,30 @@ export const amisRouter = createTRPCRouter({
             return APIOUTPUT;
           }
 
+          const response_term = await fetch(
+            `${BASE_DOMAIN}/api/scheduled-features/enlistment_finalization?role=student`,
+            {
+              credentials: "include",
+              headers: userHeaders(input.token),
+              referrer: "https://amis.uplb.edu.ph/",
+              method: "GET",
+              mode: "cors",
+            }
+          );
+
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          const term = await response_term.json();
+
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+          const term_id = term.activeTerm.term_id as string;
+
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           APIOUTPUT = {
             ...APIOUTPUT,
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             ...output.user,
+
+            term_id: term_id,
           };
         } catch (error) {
           console.log(error);
@@ -134,27 +155,10 @@ export const amisRouter = createTRPCRouter({
       return output;
     }),
   getSubjects: publicProcedure
-    .input(z.object({ token: z.string(), userID: z.string() }))
+    .input(z.object({ token: z.string(), userID: z.string(), term_id: z.string() }))
     .query(async ({ input }) => {
-      const response_term = await fetch(
-        `${BASE_DOMAIN}/api/scheduled-features/enlistment_finalization?role=student`,
-        {
-          credentials: "include",
-          headers: userHeaders(input.token),
-          referrer: "https://amis.uplb.edu.ph/",
-          method: "GET",
-          mode: "cors",
-        }
-      );
-
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const term = await response_term.json();
-
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      const term_id = term.activeTerm.term_id;
-
       const response = await fetch(
-        `${BASE_DOMAIN}/api/students/enlistments?enlistment_user_id=${input.userID}&term_id=${term_id}&enlistedClasses=true`,
+        `${BASE_DOMAIN}/api/students/enlistments?enlistment_user_id=${input.userID}&term_id=${input.term_id}&enlistedClasses=true`,
         {
           credentials: "include",
           headers: userHeaders(input.token),
@@ -178,6 +182,7 @@ export const amisRouter = createTRPCRouter({
     .input(
       z.object({
         token: z.string(),
+        term_id: z.string(),
         course: z.string(),
         status: z.string(),
         items: z.number(),
@@ -188,8 +193,10 @@ export const amisRouter = createTRPCRouter({
       const course = input.course.split(" ").join("+");
       const items = Math.max(1, input.items);
       const page = Math.max(1, input.page);
+      const term_id = input.term_id;
+      // https://api-amis.uplb.edu.ph/api/students/classes?page=1&items=20&status=Active&by_term_type=true&term_id=1251&course_code_like=cmsc&section_like=--&class_status=Open
       const response = await fetch(
-        `${BASE_DOMAIN}/api/students/classes?page=${page}&items=${items}&status=Active&course_code_like=${course}&section_like=--&class_status=${input.status}`,
+        `${BASE_DOMAIN}/api/students/classes?page=${page}&items=${items}&status=Active&by_term_type=true&term_id=${term_id}&course_code_like=${course}&section_like=--&class_status=${input.status}`,
         {
           credentials: "include",
           headers: userHeaders(input.token),

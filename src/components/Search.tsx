@@ -6,8 +6,9 @@ import { api } from "~/utils/api";
 
 const Search: React.FC<{
   token: string | undefined;
+  term_id: string | undefined;
   refetchSubj: () => void;
-}> = ({ token, refetchSubj }) => {
+}> = ({ token, term_id, refetchSubj }) => {
   const [courseSearch, setCourseSearch] = useState("");
   const [items, setItems] = useState(5);
 
@@ -18,6 +19,7 @@ const Search: React.FC<{
       page: 1,
       status: "All",
       token: token ?? "",
+      term_id: term_id ?? "",
     },
     { enabled: false }
   );
@@ -45,9 +47,11 @@ const Search: React.FC<{
         let addbookmark: {
           classes: { class_id: number; linked: number | boolean }[];
           action: string;
+          term_id: string | undefined;
         } = {
           classes: [{ class_id: value.id, linked: false }],
           action: "Bookmarked",
+          term_id: term_id ?? "",
         };
 
         if (value.parent_class_id !== null) {
@@ -57,6 +61,7 @@ const Search: React.FC<{
               { class_id: value.parent_class_id, linked: value.id },
             ],
             action: "Bookmarked",
+            term_id: term_id ?? ""
           };
         }
         // @ts-ignore

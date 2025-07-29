@@ -6,13 +6,15 @@ import BasePage from "~/components/BasePage";
 import Search from "~/components/Search";
 import { api } from "~/utils/api";
 
-const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
+const Home: React.FC<{ usertoken?: string; userid?: string; term_id?: string }> = ({
   usertoken,
   userid,
+  term_id,
 }) => {
   const subjects = api.amis.getSubjects.useQuery({
     token: usertoken ?? "",
     userID: userid ?? "",
+    term_id: term_id ?? "",
   });
 
   const refetchSubjects = () => {
@@ -169,6 +171,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
                     const ActionBookmarkEnlist = {
                       classes: [bookmarkInfo],
                       action: "Enlisted",
+                      term_id: term_id,
                     };
 
                     addbk.mutate({
@@ -190,6 +193,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
                     const ActionBookmarkRemove = {
                       classes: [bookmarkInfo],
                       action: "Deleted",
+                      term_id: term_id,
                     };
 
                     removebk.mutate({
@@ -216,6 +220,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
                     const ActionEnlistCancel = {
                       classes: [bookmarkInfo],
                       action: "Cancelled",
+                      term_id: term_id,
                     };
 
                     removebk.mutate({
@@ -274,6 +279,7 @@ const Home: React.FC<{ usertoken?: string; userid?: string }> = ({
 
       <Search
         token={usertoken}
+        term_id={term_id}
         refetchSubj={() => {
           refetchSubjects();
         }}

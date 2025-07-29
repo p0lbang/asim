@@ -6,19 +6,23 @@ import { api } from "~/utils/api";
 export default function Index() {
   const [token, setToken] = useState("");
   const [id, setID] = useState("");
+  const [term_id, setTermID] = useState("");
   const validateToken = api.amis.validateToken.useQuery({ token });
 
   useEffect(() => {
     setToken(localStorage.getItem("token") ?? "");
     setID(localStorage.getItem("id") ?? "");
+    setTermID(String(localStorage.getItem("term_id")) ?? "");
   }, []);
 
   useEffect(() => {
     if (validateToken.data) {
       localStorage.setItem("id", validateToken.data.id);
       setID(validateToken.data.id);
+      setTermID(String(validateToken.data.term_id));
       localStorage.setItem("first_name", validateToken.data.first_name);
       localStorage.setItem("last_name", validateToken.data.last_name);
+      localStorage.setItem("term_id", validateToken.data.term_id);
     }
     // console.log("hatdog");
   }, [validateToken.data]);
@@ -32,7 +36,7 @@ export default function Index() {
     );
 
   if (token !== "" && id !== "") {
-    return <Home usertoken={token} userid={id} />;
+    return <Home usertoken={token} userid={id} term_id={String(term_id)} />;
   }
 
   return (
