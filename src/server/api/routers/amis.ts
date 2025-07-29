@@ -136,8 +136,25 @@ export const amisRouter = createTRPCRouter({
   getSubjects: publicProcedure
     .input(z.object({ token: z.string(), userID: z.string() }))
     .query(async ({ input }) => {
+      const response_term = await fetch(
+        `${BASE_DOMAIN}/api/scheduled-features/enlistment_finalization?role=student`,
+        {
+          credentials: "include",
+          headers: userHeaders(input.token),
+          referrer: "https://amis.uplb.edu.ph/",
+          method: "GET",
+          mode: "cors",
+        }
+      );
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const term = await response_term.json();
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      const term_id = term.activeTerm.term_id;
+
       const response = await fetch(
-        `${BASE_DOMAIN}/api/students/enlistments?enlistment_user_id=${input.userID}&enlistedClasses=true`,
+        `${BASE_DOMAIN}/api/students/enlistments?enlistment_user_id=${input.userID}&term_id=${term_id}&enlistedClasses=true`,
         {
           credentials: "include",
           headers: userHeaders(input.token),
